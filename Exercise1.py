@@ -1,3 +1,4 @@
+#author: Nguyen Vinh Linh & Nguyen Duy Kien
 import psycopg2
 from sql_test_lib import connect
 import requests
