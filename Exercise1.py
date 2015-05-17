@@ -23,9 +23,9 @@ def execute_query(cursor=None, query=None, filename=None, format=None):
         for tup in cursor.fetchall():
             output += str(tup) + "\n"
             output_array.append(tup)
-
-        for i in output_array:
-            print i
+        # for Printing all data
+        # for i in output_array:
+        #     print i
     except psycopg2.ProgrammingError, e:
         print e
     if(cursor_is_given == False):
@@ -43,8 +43,6 @@ def execute_query(cursor=None, query=None, filename=None, format=None):
             # f.write(output)
             # f.write("</table>")
             # f.close()
-
-
             a = html.table(output_array)
             print(a)
 
@@ -57,7 +55,7 @@ def execute_query(cursor=None, query=None, filename=None, format=None):
             f = open(filename + "." + format, 'w')
             f.write(output)
             f.close()
-        elif format( format == "none"):
+        elif format(format == "none"):
             print("print in no documentation")
             print(output)
         else:
@@ -97,15 +95,15 @@ def main2():
     url_list = []
 
     for line in li_list:
-        country = (line.split(":")[0][4:]) #take the country, remove li
-        url_name = (line.split(":")[1][1:]) #take the url_name, remove first space
+        country = (line.split(":")[0][4:])  # take the country, remove li
+        url_name = (line.split(":")[1][1:])  # take the url_name, remove first space
         hostname_list.append(country + "-" + url_name)
         href_list = line.split('href="')
         line_url = ""
         for href in href_list:
             href_check = re.search(r'.*://.*', href, re.IGNORECASE)
             if href_check != None:
-                #print(href.split('">')[0])
+                # print(href.split('">')[0])
                 if line_url == "":
                     line_url = href.split('">')[0]
                 else:
@@ -114,20 +112,18 @@ def main2():
                 url_list.append(line_url)
 
     for i in range(0, len(hostname_list)):
-         print(hostname_list[i] + "-->" + url_list[i])
-    ##Make cursor
+        print(hostname_list[i] + "-->" + url_list[i])
+    #  Make cursor
     connection = connect("bit")
     cursor = connection.cursor()
-
-
-    ##Making Table
+    #  Making Table
     query_make_table = "CREATE TABLE academics.Debian_DB(\
                         ID SERIAL PRIMARY KEY , \
                         HostName VARCHAR(70) NOT NULL, \
                         Url VARCHAR(255) NOT NULL)"
     execute_query(cursor=cursor, query=query_make_table, format="none")
     connection.commit()
-    ##Inserting data into the db
+    # Inserting data into the db
     for i in range(0, len(hostname_list)):
         insert_query = "INSERT INTO academics.Debian_DB(hostname, url) \
                         VALUES ('%s', '%s')" % (hostname_list[i], url_list[i])
